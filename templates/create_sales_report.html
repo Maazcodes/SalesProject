@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Create Sales Report{% endblock title %}
+
+{% block content %}
+{% load static %}
+<h2 class="text-center my-2">Create Sales Report</h2>
+
+{% if form.errors %}
+<div>There are errors in the form!</div>
+{% endif %}
+
+<div class="container">
+    <div class="row justify-content-center" >
+        <div class="col-md-12" style="border: 2px solid gray; width: min-content;">
+            <form method="POST">
+                {% csrf_token %}
+                {% include 'form_table.html' with form=form %}
+                <div class="mt-4 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-outline-success me-4">Create</button>
+                    <a href="{% url 'sales_reports_list' %}" class="btn btn-outline-danger" role="button">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

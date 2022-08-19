@@ -1,0 +1,54 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Sales Agent List Records {% endblock title %}
+
+{% block content %}
+
+{% if sales_agents %}
+{% include 'message_file.html' %}
+
+<h2 class="text-center my-2"> Sales Agents</h2>
+
+<table class="container table mt-3 ">
+    <thead>
+        <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Hire Date</th>
+        <th scope="col">Birthday</th>
+        <th scope="col">City</th>
+        </tr>
+    </thead>
+    {% for sales_agent in sales_agents %}
+    <tbody>
+        <tr>
+        <td>{{sales_agent.name}}</td>
+        <td>{{sales_agent.hire_date|date:'Y-m-d'}}</td>
+        <td>{{sales_agent.birthday|date:'Y-m-d'}}</td>
+        {% if sales_agent.city %}
+        <td>{{sales_agent.city}}</td>
+        {% else %}
+        <td>Not mentioned</td>
+        {% endif %}
+        <td><a role="button" class="btn btn-outline-success" href="{% url 'create_sales_report' sales_agent.id%}">Add Report</a></td>
+        <td><a role="button" class="btn btn-outline-success" href="{% url 'sales_reports_list_agent' sales_agent.id%}">View Reports</a></td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table> 
+
+<div class="container text-center">
+    <div class="row">
+        <div class="col-md-12">
+        <a class=" btn btn-outline-success mx-auto my-2 py-2" role="button" href="{% url 'create_sales_agent' %}">Add sales agent record</a> 
+        </div>
+    </div>
+</div>
+
+{% else %}
+  <div class="text-center">
+    <h4 class="mt-3">No sales agent record</h4>
+    <a class="btn btn-outline-primary mt-3 pt-3 " role="button" href="{% url 'create_sales_agent' %}">Add sales agent record</a>
+  </div>
+{% endif %}
+{% endblock content %}

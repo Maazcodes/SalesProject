@@ -1,0 +1,37 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Sales Agent Reports {% endblock title %}
+
+{% block content %}
+
+{% if sales_reports %}
+{% include 'message_file.html' %}
+
+<h2 class="text-center my-2"> Sales Agent Reports</h2>
+
+<table class="container table mt-3 ">
+    <thead>
+        <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Period</th>
+        <th scope="col">Sales Volume</th>
+        </tr>
+    </thead>
+    {% for sales_report in sales_reports %}
+    <tbody>
+        <tr>
+        <td>{{sales_report.sales_agent.name}}</td>
+        <td>{{sales_report.period}}</td>
+        <td>{{sales_report.sales_volume}}</td>   
+        </tr>
+    </tbody>
+    {% endfor %}
+</table> 
+
+{% else %}
+  <div class="text-center">
+    <h4 class="mt-3">No sales agent report</h4>
+  </div>
+{% endif %}
+{% endblock content %}
