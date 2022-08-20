@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CURRENCIES = ('USD', 'EUR')
+
+CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
 
 # Application definition
 

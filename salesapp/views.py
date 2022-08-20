@@ -54,7 +54,6 @@ class CreateSalesReport(SuccessMessageMixin, CreateView):
     model = SalesReport
     template_name = "create_sales_report.html"
     success_message = 'Sales Report successfully created!'
-    success_url = reverse_lazy("sales_agents_list")
     form_class = SalesReportForm
 
     def get_object(self):
@@ -65,3 +64,6 @@ class CreateSalesReport(SuccessMessageMixin, CreateView):
         form.instance.sales_agent = self.get_object()
         form.save()
         return super(CreateSalesReport, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy("sales_reports_list_agent", kwargs={'id': self.get_object().id})
