@@ -13,14 +13,14 @@
     <thead>
         <tr>
         <th scope="col">Period</th>
-        <th scope="col">Sales Volume</th>
+        <th scope="col">Sales Volume in EURO</th>
         </tr>
     </thead>
     {% for sales_report in sales_reports %}
     <tbody>
         <tr>
         <td>{{sales_report.period}}</td>
-        <td style="padding-left: 30px;">{{sales_report.sales_volume}}</td>   
+        <td style="padding-left: 63px;">{{sales_report.sales_volume}}</td>   
         </tr>
     </tbody>
     {% endfor %}

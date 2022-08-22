@@ -1,13 +1,9 @@
+from tabnanny import verbose
 from rest_framework import serializers
 from salesapp.models import SalesAgent,SalesReport
 from django import template
 import calendar
 
-register = template.Library()
-
-@register.filter
-def month_name(value):
-    return calendar.month_name[value]
     
 
 class SalesAgentSerializer(serializers.ModelSerializer):
