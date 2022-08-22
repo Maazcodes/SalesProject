@@ -4,13 +4,12 @@
 {% block title %} Sales Agent List Records {% endblock title %}
 
 {% block content %}
-
+{% load rest_framework %}
 {% if sales_agents %}
-{% include 'message_file.html' %}
 
 <h2 class="text-center my-2"> Sales Agents</h2>
 
-<table class="container table mt-3 ">
+<table class="container table mt-4" style="border: 2px solid gray;">
     <thead>
         <tr>
         <th scope="col">Name</th>
@@ -22,16 +21,16 @@
     {% for sales_agent in sales_agents %}
     <tbody>
         <tr>
-        <td>{{sales_agent.name}}</td>
-        <td>{{sales_agent.hire_date|date:'Y-m-d'}}</td>
-        <td>{{sales_agent.birthday|date:'Y-m-d'}}</td>
+        <td>{{sales_agent.name|truncatechars:12}}</td>
+        <td>{{sales_agent.hire_date}}</td>
+        <td>{{sales_agent.birthday}}</td>
         {% if sales_agent.city %}
-        <td>{{sales_agent.city}}</td>
+        <td>{{sales_agent.city|truncatechars:12}}</td>
         {% else %}
         <td>Not mentioned</td>
         {% endif %}
-        <td><a role="button" class="btn btn-outline-success" href="{% url 'create_sales_report' sales_agent.id%}">Add Report</a></td>
-        <td><a role="button" class="btn btn-outline-success" href="{% url 'sales_reports_list_agent' sales_agent.id%}">View Reports</a></td>
+        <td><a role="button" class="btn btn-outline-success" href="{% url 'create_sales_report_api' sales_agent.id %}">Add Report</a></td>
+        <td><a role="button" class="btn btn-outline-primary" href="{% url 'sales_reports_list_agent_api' sales_agent.id%}">View Reports</a></td>
         </tr>
     </tbody>
     {% endfor %}

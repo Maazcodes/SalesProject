@@ -6,24 +6,23 @@
 {% block content %}
 
 {% if sales_reports %}
-{% include 'message_file.html' %}
 
 <h2 class="text-center my-2"> Sales Agent Reports</h2>
 
-<table class="container table mt-3 ">
+<table class="container table mt-5" style="width: 550px; border: 2px solid gray;">
     <thead>
         <tr>
         <th scope="col">Name</th>
         <th scope="col">Period</th>
-        <th scope="col">Sales Volume</th>
+        <th scope="col">Sales Volume in EURO</th>
         </tr>
     </thead>
     {% for sales_report in sales_reports %}
     <tbody>
         <tr>
-        <td>{{sales_report.sales_agent.name}}</td>
+        <td>{{sales_report.sales_agent|truncatechars:12}}</td>
         <td>{{sales_report.period}}</td>
-        <td>{{sales_report.sales_volume}}</td>   
+        <td style="padding-left: 60px;" >{{sales_report.sales_volume}}</td>   
         </tr>
     </tbody>
     {% endfor %}

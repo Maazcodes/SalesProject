@@ -1,69 +1,99 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.views.generic.edit import CreateView
-from django.views.generic.list import ListView
 from salesapp.models import SalesAgent, SalesReport
-from salesapp.forms import SalesAgentForm, SalesReportForm
-from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from salesapp.serializer import SalesAgentSerializer, SalesReportSerializer
+from rest_framework.renderers import TemplateHTMLRenderer
+
 
 class HomePageView(View):
+    """Display Homepage"""
+
     def get(self, request):
         return render(request, "home.html")
 
-class SalesAgentList(ListView):
-    model = SalesAgent
-    context_object_name = 'sales_agents'
+
+class SalesAgentList(APIView):
+    """Display a list of sales agents"""
+
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = "sales_agent_list.html"
 
-class CreateSalesAgent(SuccessMessageMixin, CreateView):
-    model = SalesAgent
+    def get(self, request):
+        sales_agents = SalesAgent.objects.all().values()
+        serializer = SalesAgentSerializer(sales_agents, many=True)
+        return Response({"sales_agents": serializer.data})
+
+
+class CreateSalesAgent(APIView):
+    """Create an object sales agent"""
+
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = "create_sales_agent.html"
-    success_message = 'Sales agent record successfully created!'
-    success_url = reverse_lazy("sales_agents_list")
-    form_class = SalesAgentForm
+    style = {"template_pack": "rest_framework/vertical/"}
 
-class SalesReportsList(ListView):
+    def get(self, request):
+        serializer = SalesAgentSerializer()
+        return Response({"serializer": serializer, "style": self.style})
 
-    """ View all reports"""
-    model = SalesReport
-    context_object_name = 'sales_reports'
-    template_name = "sales_report_list.html"
+    def post(self, request):
+        serializer = SalesAgentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect("sales_agents_list")
+        return Response({"serializer": serializer, "style": self.style})
 
-class SalesReportsListOfSalesAgent(ListView):
-    """ View reports of a specific sales agent"""
-    model = SalesReport
-    context_object_name = 'sales_reports'
+
+class CreateSalesReport(APIView):
+    """Create sales report object of a particlular sales agent"""
+
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "create_sales_report.html"
+    style = {"template_pack": "rest_framework/vertical/"}
+
+    def get(self, request, id):
+        serializer = SalesReportSerializer()
+        return Response({"serializer": serializer, "style": self.style})
+
+    def post(self, request, id):
+        sales_agent = get_object_or_404(SalesAgent, id=id)
+        serializer = SalesReportSerializer(data=request.data)
+        if serializer.is_valid():
+            SalesReport.objects.create(
+                sales_agent=sales_agent,
+                period=serializer.data.get("period"),
+                sales_volume=serializer.data.get("sales_volume"),
+            )
+            return redirect(
+                reverse_lazy("sales_reports_list_agent_api", kwargs={"id": id})
+            )
+        return Response({"serializer": serializer, "style": self.style})
+
+
+class AgentSalesReport(APIView):
+    """Display a list of sales reports of a particular agent"""
+
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = "sales_report_list_agent.html"
 
-    def get_object(self):
-        sales_agent_id = self.kwargs.get("id")
-        return get_object_or_404(SalesAgent, id=sales_agent_id)
-    
-    def get_context_data(self, **kwargs):          
-        context = super().get_context_data(**kwargs)                     
-        sales_agent = self.get_object()
-        context["sales_agent_name"] = sales_agent.name
-        return context
+    def get(self, request, id):
+        sales_agent = get_object_or_404(SalesAgent, id=id)
+        sales_reports = SalesReport.objects.filter(sales_agent__id=sales_agent.id)
+        serializer = SalesReportSerializer(sales_reports, many=True)
+        return Response(
+            {"sales_agent_name": sales_agent.name, "sales_reports": serializer.data}
+        )
 
-    def get_queryset(self):
-        sales_agent_id = self.get_object().id
-        return self.model.objects.filter(sales_agent__id = sales_agent_id)
 
-class CreateSalesReport(SuccessMessageMixin, CreateView):
-    model = SalesReport
-    template_name = "create_sales_report.html"
-    success_message = 'Sales Report successfully created!'
-    form_class = SalesReportForm
+class SalesReportsList(APIView):
+    """Display a list of all sales reports"""
 
-    def get_object(self):
-        sales_agent_id = self.kwargs.get("id")
-        return get_object_or_404(SalesAgent, id=sales_agent_id)
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "sales_report_list.html"
 
-    def form_valid(self, form):
-        form.instance.sales_agent = self.get_object()
-        form.save()
-        return super(CreateSalesReport, self).form_valid(form)
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy("sales_reports_list_agent", kwargs={'id': self.get_object().id})
+    def get(self, request):
+        sales_reports = SalesReport.objects.all()
+        serializer = SalesReportSerializer(sales_reports, many=True)
+        return Response({"sales_reports": serializer.data})

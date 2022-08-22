@@ -1,7 +1,7 @@
 ## Sales Tool Project
 
 A tool for a company to submit and review sales reports of their sales agents. <br>
-This project is developed using Python, Django and Bootstrap
+This project is developed using Python, Django Restframework and Bootstrap
 
 #### The company can do the following activities:
 

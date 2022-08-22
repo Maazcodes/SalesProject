@@ -6,11 +6,10 @@
 {% block content %}
 
 {% if sales_reports %}
-{% include 'message_file.html' %}
 
 <h2 class="text-center my-2"> Reports of {{sales_agent_name}}</h2>
 
-<table class="container table mt-3 ">
+<table class="container table mt-5 " style="width: 317px; border: 2px solid gray;">
     <thead>
         <tr>
         <th scope="col">Period</th>
@@ -20,8 +19,8 @@
     {% for sales_report in sales_reports %}
     <tbody>
         <tr>
-        <td>{{sales_report.period |date:'Y, F'}}</td>
-        <td>{{sales_report.sales_volume}}</td>   
+        <td>{{sales_report.period}}</td>
+        <td style="padding-left: 30px;">{{sales_report.sales_volume}}</td>   
         </tr>
     </tbody>
     {% endfor %}

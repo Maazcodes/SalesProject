@@ -7,24 +7,20 @@
 {% load static %}
 <h2 class="text-center my-2">Create Sales Agent Record</h2>
 
-{% if form.errors %}
-<div>There are errors in the form!</div>
-{% endif %}
-25px 50px 75px;
 <div class="container" style="margin:27px 0px 60px;" >
     <div class="row justify-content-center">
         <div class="col-md-12 " style="border: 2px solid gray; width: 400px; border-radius: 10px; padding: 10px;">
-            {% if form.errors %}
-                <div class="text-danger text-center">There are errors in the form!</div>
-            {% endif %}
+            {% load rest_framework %}
+
             <form method="POST">
                 {% csrf_token %}
-                {% include 'form_table.html' with form=form %}
+                {% render_form serializer template_pack='rest_framework/vertical' %}
                 <div class="mt-5 d-flex justify-content-center">
                     <button type="submit" class="btn btn-outline-success me-4">Create</button>
                     <a href="{% url 'sales_agents_list' %}" class="btn btn-outline-danger" role="button">Cancel</a>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
