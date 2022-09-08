@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from salesapp.serializer import SalesAgentSerializer, SalesReportSerializer
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework import generics
 
 
 class HomePageView(View):
@@ -14,6 +15,27 @@ class HomePageView(View):
     def get(self, request):
         return render(request, "home.html")
 
+
+class SalesAgentsGenerics(generics.ListCreateAPIView):
+    queryset = SalesAgent.objects.all().values()
+    serializer_class = SalesAgentSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+    
+    style = {"template_pack": "rest_framework/vertical/"}
+
+    def list(self, request, pk=None):
+        queryset = SalesAgent.objects.all().values()
+        serializer = SalesAgentSerializer(queryset, many=True)
+        return Response({"sales_agents":serializer.data}, template_name="sales_agent_list.html")
+
+    # def get(self, request):
+    #     serializer = SalesAgentSerializer()
+    #     return Response({"serializer": serializer, "style": self.style})
+
+    def post(self, request, pk, *args, **kwargs):
+        myobj = get_object_or_404(SalesAgent, pk=pk)
+        serializer = self.get_serializer(myobj)
+        return Response({"serializer":serializer}, template_name="create_sales_agent.html")
 
 class SalesAgentList(APIView):
     """Display a list of sales agents"""
