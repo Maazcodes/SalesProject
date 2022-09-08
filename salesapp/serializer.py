@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from salesapp.models import SalesAgent,SalesReport
+from salesapp.models import SalesAgent
 
 class SalesAgentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +12,7 @@ class SalesReportSerializer(serializers.Serializer):
     sales_volume = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     def to_representation(self, instance):
+        # updated period attribute to the required format (Year, Month name)
         representation = super().to_representation(instance)
         representation["period"] = (
             instance.period.strftime("%Y, %B"))
